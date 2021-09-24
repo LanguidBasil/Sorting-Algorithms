@@ -4,14 +4,12 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
-using Newtonsoft.Json;
 
 namespace Lab1
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
 		private int[] _nArray;
-		private KeyValuePair<string, JsonToken>[] _jArray;
 		private int _comparsions;
 		private int _permutations;
 		private float _milliseconds;
@@ -53,7 +51,7 @@ namespace Lab1
 
 				if (extension == ".txt")
 				{
-					_nArray = ParseTextToIntArray(File.ReadAllText(ArrayInDialog.FileName));
+					_nArray = ParseTextToIntArray(ArrayInDialog.FileName);
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -62,7 +60,7 @@ namespace Lab1
 				}
 				else if (extension == ".json")
 				{
-					// proceed next
+
 				}
 			}
 		}
@@ -141,8 +139,9 @@ namespace Lab1
 
 		// ------------------------------------- utility methods ----------------------------------------
 
-		private int[] ParseTextToIntArray(in string text)
+		private int[] ParseTextToIntArray(in string path)
 		{
+			string text = File.ReadAllText(path);
 			List<int> result = new List<int>();
 
 			string number = "";
@@ -161,11 +160,6 @@ namespace Lab1
 
 			result.Add(Convert.ToInt32(number));
 			return result.ToArray();
-		}
-
-		private KeyValuePair<string, JsonToken> ParseJsonToArray()
-		{
-			return default;
 		}
 
 		private void PrintCharacteristicsToTable(in int row, in int elements, in int comparsions, in int permutations, in float time)
@@ -187,11 +181,6 @@ namespace Lab1
 			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
 			textBox.SelectionStart = textBox.TextLength;
 			textBox.SelectedText = arrayElements;
-		}
-
-		private void PrintArray(in KeyValuePair<string, JsonToken> array, in TextBox textBox)
-		{
-
 		}
 
 		private void ClearSorted()
