@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
-using Json.Net;
 
 namespace Lab1
 {
@@ -61,7 +60,7 @@ namespace Lab1
 				}
 				else if (extension == ".json")
 				{
-					//_jArray = ParseJsonToArray(ArrayInDialog.FileName);
+
 				}
 			}
 		}
