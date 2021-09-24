@@ -4,14 +4,13 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
-using Newtonsoft.Json;
+using Json.Net;
 
 namespace Lab1
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
 		private int[] _nArray;
-		private KeyValuePair<string, JsonToken>[] _jArray;
 		private int _comparsions;
 		private int _permutations;
 		private float _milliseconds;
@@ -62,7 +61,7 @@ namespace Lab1
 				}
 				else if (extension == ".json")
 				{
-					// proceed next
+					//_jArray = ParseJsonToArray(ArrayInDialog.FileName);
 				}
 			}
 		}
@@ -164,11 +163,6 @@ namespace Lab1
 			return result.ToArray();
 		}
 
-		private KeyValuePair<string, JsonToken> ParseJsonToArray()
-		{
-			return default;
-		}
-
 		private void PrintCharacteristicsToTable(in int row, in int elements, in int comparsions, in int permutations, in float time)
 		{
 			_sortTableControls[SortedTable.GetIndexOfControl(row, 1)].Text = elements.ToString();
@@ -188,11 +182,6 @@ namespace Lab1
 			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
 			textBox.SelectionStart = textBox.TextLength;
 			textBox.SelectedText = arrayElements;
-		}
-
-		private void PrintArray(in KeyValuePair<string, JsonToken>[] array, in TextBox textBox)
-		{
-
 		}
 
 		private void ClearSorted()
