@@ -53,7 +53,7 @@ namespace Lab1
 
 				if (extension == ".txt")
 				{
-					_nArray = ParseTextToIntArray(File.ReadAllText(ArrayInDialog.FileName));
+					_nArray = ParseTextToIntArray(ArrayInDialog.FileName);
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -141,8 +141,9 @@ namespace Lab1
 
 		// ------------------------------------- utility methods ----------------------------------------
 
-		private int[] ParseTextToIntArray(in string text)
+		private int[] ParseTextToIntArray(in string path)
 		{
+			string text = File.ReadAllText(path);
 			List<int> result = new List<int>();
 
 			string number = "";
@@ -189,7 +190,7 @@ namespace Lab1
 			textBox.SelectedText = arrayElements;
 		}
 
-		private void PrintArray(in KeyValuePair<string, JsonToken> array, in TextBox textBox)
+		private void PrintArray(in KeyValuePair<string, JsonToken>[] array, in TextBox textBox)
 		{
 
 		}
