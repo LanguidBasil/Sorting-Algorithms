@@ -58,7 +58,7 @@ namespace Lab1
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
 					ArrayInPicture.Image = Properties.Resources.Passed;
-					PrintArrayToPreview(_nArray);
+					PrintArray(_nArray, ArrayInPreview);
 				}
 				else if (extension == ".json")
 				{
@@ -176,38 +176,20 @@ namespace Lab1
 			_sortTableControls[SortedTable.GetIndexOfControl(row, 4)].Text = time.ToString();
 		}
 
-		private void PrintArrayToPreview(in int[] array)
+		private void PrintArray(in int[] array, in TextBox textBox)
 		{
-			ArrayInPreview.Text = "";
+			textBox.Text = "";
 
 			string arrayElements = "";
 			for (int i = 0; i < array.Length; i++)
 				arrayElements += array[i].ToString() + ' ';
 
 			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
-			ArrayInPreview.SelectionStart = ArrayInPreview.TextLength;
-			ArrayInPreview.SelectedText = arrayElements;
+			textBox.SelectionStart = textBox.TextLength;
+			textBox.SelectedText = arrayElements;
 		}
 
-		private void PrintArrayToPreview(in KeyValuePair<string, JsonToken> array)
-		{
-
-		}
-
-		private void PrintArrayToSorted(in int[] array)
-		{
-			SortedArray.Text = "";
-
-			string arrayElements = "";
-			for (int i = 0; i < array.Length; i++)
-				arrayElements += array[i].ToString() + ' ';
-
-			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
-			SortedArray.SelectionStart = SortedArray.TextLength;
-			SortedArray.SelectedText = arrayElements;
-		}
-
-		private void PrintArrayToSorted(in KeyValuePair<string, JsonToken> array)
+		private void PrintArray(in KeyValuePair<string, JsonToken> array, in TextBox textBox)
 		{
 
 		}
@@ -268,7 +250,7 @@ namespace Lab1
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
 
-			PrintArrayToSorted(arrayIn);
+			PrintArray(arrayIn, SortedArray);
 			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
 		}
 
@@ -291,7 +273,7 @@ namespace Lab1
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
 
-			PrintArrayToSorted(arrayIn);
+			PrintArray(arrayIn, SortedArray);
 			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
 		}
 
@@ -320,7 +302,7 @@ namespace Lab1
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
 
-			PrintArrayToSorted(arrayIn);
+			PrintArray(arrayIn, SortedArray);
 			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
 		}
 
@@ -356,7 +338,7 @@ namespace Lab1
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
 
-			PrintArrayToSorted(arrayIn);
+			PrintArray(arrayIn, SortedArray);
 			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
 		}
 
@@ -367,7 +349,7 @@ namespace Lab1
 			QuickSort_Algo(ref arrayIn, 0, arrayIn.Length - 1);
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
-			PrintArrayToSorted(arrayIn);
+			PrintArray(arrayIn, SortedArray);
 			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
 		}
 
