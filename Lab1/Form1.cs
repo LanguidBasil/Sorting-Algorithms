@@ -4,12 +4,14 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace Lab1
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
-		private int[] _array;
+		private int[] _nArray;
+		private KeyValuePair<string, JsonToken>[] _jArray;
 		private int _comparsions;
 		private int _permutations;
 		private float _milliseconds;
@@ -51,12 +53,12 @@ namespace Lab1
 
 				if (extension == ".txt")
 				{
-					_array = ParseTextToIntArray(File.ReadAllText(ArrayInDialog.FileName));
+					_nArray = ParseTextToIntArray(File.ReadAllText(ArrayInDialog.FileName));
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
 					ArrayInPicture.Image = Properties.Resources.Passed;
-					PrintArrayToPreview(_array);
+					PrintArrayToPreview(_nArray);
 				}
 				else if (extension == ".json")
 				{
@@ -68,9 +70,9 @@ namespace Lab1
 		private void SortButton_Click(object sender, EventArgs e)
 		{
 			// we're not changing initial array so we can try every sorting algorithm
-			int[] array = new int[_array.Length];
+			int[] array = new int[_nArray.Length];
 			for (int i = 0; i < array.Length; i++)
-				array[i] = _array[i];
+				array[i] = _nArray[i];
 
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
@@ -161,6 +163,11 @@ namespace Lab1
 			return result.ToArray();
 		}
 
+		private KeyValuePair<string, JsonToken> ParseJsonToArray()
+		{
+			return default;
+		}
+
 		private void PrintCharacteristicsToTable(in int row, in int elements, in int comparsions, in int permutations, in float time)
 		{
 			_sortTableControls[SortedTable.GetIndexOfControl(row, 1)].Text = elements.ToString();
@@ -182,8 +189,15 @@ namespace Lab1
 			ArrayInPreview.SelectedText = arrayElements;
 		}
 
+		private void PrintArrayToPreview(in KeyValuePair<string, JsonToken> array)
+		{
+
+		}
+
 		private void PrintArrayToSorted(in int[] array)
 		{
+			SortedArray.Text = "";
+
 			string arrayElements = "";
 			for (int i = 0; i < array.Length; i++)
 				arrayElements += array[i].ToString() + ' ';
@@ -191,6 +205,11 @@ namespace Lab1
 			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
 			SortedArray.SelectionStart = SortedArray.TextLength;
 			SortedArray.SelectedText = arrayElements;
+		}
+
+		private void PrintArrayToSorted(in KeyValuePair<string, JsonToken> array)
+		{
+
 		}
 
 		private void ClearSorted()
