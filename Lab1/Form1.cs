@@ -12,10 +12,7 @@ namespace Lab1
 	public partial class Form : System.Windows.Forms.Form
 	{
 		private int[] _nArray;
-		private int _comparsions;
-		private int _permutations;
-		private float _milliseconds;
-		private Control[] _sortTableControls;
+		private readonly Control[] _sortTableControls;
 
 		public Form()
 		{
@@ -74,38 +71,46 @@ namespace Lab1
 			for (int i = 0; i < array.Length; i++)
 				array[i] = _nArray[i];
 
+			(int, int, float) results;
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
 				case 0:
 				{
-					SelectionSort(ref array);
+					results = Sorting.Selection(ref array);
 					break;
 				}
 				case 1:
 				{
-					BubbleSort(ref array);
+					results = Sorting.Bubble(ref array);
 					break;
 				}
 				case 2:
 				{
-					InsertionSort(ref array);
+					results = Sorting.Insertion(ref array);
 					break;
 				}
 				case 3:
 				{
-					GnomeSort(ref array);
+					results = Sorting.Gnome(ref array);
 					break;
 				}
 				case 4:
 				{
-					QuickSort(ref array);
+					results = Sorting.Quick(ref array);
 					break;
 				}
 				default:
 				{
+					results = default;
 					Console.WriteLine($"Received invalid sort method index: {SortMethodNumbersDropDown.SelectedIndex}");
 					break;
 				}
+			}
+
+			if (results != default)
+			{
+				PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, array.Length, results.Item1, results.Item2, results.Item3);
+				PrintArray(array, SortedArray);
 			}
 		}
 
@@ -193,196 +198,6 @@ namespace Lab1
 					_sortTableControls[SortedTable.GetIndexOfControl(row, column)].Text = "";
 
 			SortedArray.Text = "";
-		}
-
-		private void RestoreControlValues()
-		{
-			_comparsions = 0;
-			_permutations = 0;
-			_milliseconds = DateTime.Now.Millisecond;
-		}
-
-		private void Swap(ref int n1, ref int n2)
-		{
-			int temp = n1;
-			n1 = n2;
-			n2 = temp;
-		}
-
-		// ------------------------------------ sorting algorithms --------------------------------------
-
-		private void SelectionSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-			
-
-			// algorithm
-			int max, indexMax, currentIndex;
-			for (int j = arrayIn.Length - 1; j > 0; j--)
-			{
-				indexMax = 0;
-				max = arrayIn[indexMax];
-				currentIndex = 1;
-
-				while (currentIndex < j)
-				{
-					_comparsions++;
-					if (max < arrayIn[currentIndex])
-					{
-						max = arrayIn[currentIndex];
-						indexMax = currentIndex;
-					}
-					currentIndex++;
-				}
-
-				_permutations++;
-				Swap(ref arrayIn[currentIndex], ref arrayIn[indexMax]);
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void BubbleSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-
-			// algorithm
-			for (int i = 0; i < arrayIn.Length; i++)
-				for (int j = 0; j < arrayIn.Length - 1; j++)
-				{
-					_comparsions++;
-					if (arrayIn[j] > arrayIn[j + 1])
-					{
-						_permutations++;
-						Swap(ref arrayIn[j + 1], ref arrayIn[j]);
-					}
-				}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void InsertionSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-			
-			// algorithm
-			int key;
-			int j;
-			for (var i = 1; i < arrayIn.Length; i++)
-			{
-				key = arrayIn[i];
-				j = i;
-				_comparsions++;
-				while ((j >= 1) && (arrayIn[j - 1] > key))
-				{
-					_permutations++;
-					Swap(ref arrayIn[j - 1], ref arrayIn[j]);
-					j--;
-				}
-
-				arrayIn[j] = key;
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void GnomeSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-
-			// algorithm
-			var index = 1;
-			var nextIndex = index + 1;
-
-			while (index < arrayIn.Length)
-			{
-				_comparsions++;
-				if (arrayIn[index - 1] < arrayIn[index])
-				{
-					index = nextIndex;
-					nextIndex++;
-				}
-				else
-				{
-					_permutations++;
-					Swap(ref arrayIn[index - 1], ref arrayIn[index]);
-					index--;
-					if (index == 0)
-					{
-						index = nextIndex;
-						nextIndex++;
-					}
-				}
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void QuickSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-			QuickSort_Algo(ref arrayIn, 0, arrayIn.Length - 1);
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void QuickSort_Algo(ref int[] a, int start, int finish)
-		{
-			if (start < finish)
-			{
-				int q = QuickSort_Partition(a, start, finish);
-				QuickSort_Algo(ref a, start, q);
-				QuickSort_Algo(ref a, q + 1, finish);
-			}
-		}
-
-		private int QuickSort_Partition(int[] a, int p, int r)
-		{
-			int x = a[p];
-			int i = p - 1;
-			int j = r + 1;
-			while (true)
-			{
-				do
-				{
-					j--;
-					_comparsions++;
-				}
-				while (a[j] > x);
-				do
-				{
-					i++;
-					_comparsions++;
-				}
-				while (a[i] < x);
-				if (i < j)
-				{
-					Swap(ref a[i], ref a[j]);
-					_permutations++;
-				}
-				else
-				{
-					return j;
-				}
-			}
 		}
 	}
 }
