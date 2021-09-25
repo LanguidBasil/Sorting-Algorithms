@@ -12,6 +12,7 @@ namespace Lab1
 	{
 		private int[] _nArray;
 		private Movie[] _mArray;
+		private string workingWith;
 		private readonly Control[] _sortTableControls;
 
 		public Form()
@@ -51,6 +52,7 @@ namespace Lab1
 				if (extension == ".txt")
 				{
 					_nArray = ParseTextToIntArray(ArrayInDialog.FileName);
+					workingWith = "int";
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -60,8 +62,12 @@ namespace Lab1
 				else if (extension == ".json")
 				{
 					_mArray = ParseJsonToMovieArray(ArrayInDialog.FileName);
+					workingWith = nameof(Movie);
 
-					// proceed
+					ArrayInLabel.Text = ArrayInDialog.FileName;
+					ClearSorted();
+					ArrayInPicture.Image = Properties.Resources.Passed;
+					PrintArray(_mArray, ArrayInPreview);
 				}
 			}
 		}
@@ -69,36 +75,40 @@ namespace Lab1
 		private void SortButton_Click(object sender, EventArgs e)
 		{
 			// we're not changing initial array so we can try every sorting algorithm
-			int[] array = new int[_nArray.Length];
-			for (int i = 0; i < array.Length; i++)
-				array[i] = _nArray[i];
+			int[] ints = new int[_nArray.Length];
+			for (int i = 0; i < ints.Length; i++)
+				ints[i] = _nArray[i];
+
+			Movie[] movies = new Movie[_mArray.Length];
+            for (int i = 0; i < movies.Length; i++)
+				movies[i] = _mArray[i];
 
 			(int, int, float) results;
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
 				case 0:
 				{
-					results = Sorting.Selection(ref array);
+					results = workingWith == "int" ? Sorting.Selection(ref ints) : default;
 					break;
 				}
 				case 1:
 				{
-					results = Sorting.Bubble(ref array);
+					results = workingWith == "int" ? Sorting.Bubble(ref ints) : default;
 					break;
 				}
 				case 2:
 				{
-					results = Sorting.Insertion(ref array);
+					results = workingWith == "int" ? Sorting.Insertion(ref ints) : default;
 					break;
 				}
 				case 3:
 				{
-					results = Sorting.Gnome(ref array);
+					results = workingWith == "int" ? Sorting.Gnome(ref ints) : default;
 					break;
 				}
 				case 4:
 				{
-					results = Sorting.Quick(ref array);
+					results = workingWith == "int" ? Sorting.Quick(ref ints) : default;
 					break;
 				}
 				default:
@@ -111,8 +121,19 @@ namespace Lab1
 
 			if (results != default)
 			{
-				PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, array.Length, results.Item1, results.Item2, results.Item3);
-				PrintArray(array, SortedArray);
+				int length;
+				if (workingWith == "int")
+				{
+					PrintArray(ints, SortedArray);
+					length = ints.Length;
+				}
+				else
+				{
+					PrintArray(movies, SortedArray);
+					length = movies.Length;
+                }
+
+				PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, length, results.Item1, results.Item2, results.Item3);
 			}
 		}
 
@@ -200,6 +221,19 @@ namespace Lab1
 			string arrayElements = "";
 			for (int i = 0; i < array.Length; i++)
 				arrayElements += array[i].ToString() + ' ';
+
+			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
+			textBox.SelectionStart = textBox.TextLength;
+			textBox.SelectedText = arrayElements;
+		}
+
+		private void PrintArray(in Movie[] array, in TextBox textBox)
+		{
+			textBox.Text = "";
+
+			string arrayElements = "";
+			for (int i = 0; i < array.Length; i++)
+				arrayElements += array[i].Name + ' ' + array[i].Genre + ' ' + array[i].Director + ' ' + array[i].Year + ";   ";
 
 			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
 			textBox.SelectionStart = textBox.TextLength;
