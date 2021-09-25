@@ -4,16 +4,16 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace Lab1
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
 		private int[] _nArray;
-		private int _comparsions;
-		private int _permutations;
-		private float _milliseconds;
-		private Control[] _sortTableControls;
+		private Movie[] _mArray;
+		private SortingType _workingWith;
+		private readonly Control[] _sortTableControls;
 
 		public Form()
 		{
@@ -52,6 +52,7 @@ namespace Lab1
 				if (extension == ".txt")
 				{
 					_nArray = ParseTextToIntArray(ArrayInDialog.FileName);
+					_workingWith = SortingType.ints;
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -60,50 +61,88 @@ namespace Lab1
 				}
 				else if (extension == ".json")
 				{
+					_mArray = ParseJsonToMovieArray(ArrayInDialog.FileName);
+					_workingWith = SortingType.movies;
 
+					ArrayInLabel.Text = ArrayInDialog.FileName;
+					ClearSorted();
+					ArrayInPicture.Image = Properties.Resources.Passed;
+					PrintArray(_mArray, ArrayInPreview);
 				}
 			}
 		}
 
 		private void SortButton_Click(object sender, EventArgs e)
 		{
-			// we're not changing initial array so we can try every sorting algorithm
-			int[] array = new int[_nArray.Length];
-			for (int i = 0; i < array.Length; i++)
-				array[i] = _nArray[i];
+			int[] ints = default;
+			Movie[] movies = default;
 
+			// we're not changing initial arrays so we can try every sorting algorithm
+			if (_workingWith == SortingType.ints)
+			{
+				ints = new int[_nArray.Length];
+				for (int i = 0; i < ints.Length; i++)
+					ints[i] = _nArray[i];
+			}
+			else
+			{
+				movies = new Movie[_mArray.Length];
+				for (int i = 0; i < movies.Length; i++)
+					movies[i] = _mArray[i];
+			}
+
+
+			(int, int, float) results;
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
 				case 0:
 				{
-					SelectionSort(ref array);
+					results = _workingWith == SortingType.ints ? Sorting.Selection(ref ints) : Sorting.Selection(ref movies);
 					break;
 				}
 				case 1:
 				{
-					BubbleSort(ref array);
+					results = _workingWith == SortingType.ints ? Sorting.Bubble(ref ints) : Sorting.Bubble(ref movies);
 					break;
 				}
 				case 2:
 				{
-					InsertionSort(ref array);
+					results = _workingWith == SortingType.ints ? Sorting.Insertion(ref ints) : Sorting.Insertion(ref movies);
 					break;
 				}
 				case 3:
 				{
-					GnomeSort(ref array);
+					results = _workingWith == SortingType.ints ? Sorting.Gnome(ref ints) : Sorting.Gnome(ref movies);
 					break;
 				}
 				case 4:
 				{
-					QuickSort(ref array);
+					results = _workingWith == SortingType.ints ? Sorting.Quick(ref ints) : Sorting.Quick(ref movies);
 					break;
 				}
 				default:
 				{
+					results = default;
 					Console.WriteLine($"Received invalid sort method index: {SortMethodNumbersDropDown.SelectedIndex}");
 					break;
 				}
+			}
+
+			if (results != default)
+			{
+				int length;
+				if (_workingWith == SortingType.ints)
+				{
+					PrintArray(ints, SortedArray);
+					length = ints.Length;
+				}
+				else
+				{
+					PrintArray(movies, SortedArray);
+					length = movies.Length;
+                }
+
+				PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, length, results.Item1, results.Item2, results.Item3);
 			}
 		}
 
@@ -137,7 +176,7 @@ namespace Lab1
 			}
 		}
 
-		// ------------------------------------- utility methods ----------------------------------------
+		// -------------------------------------- parse methods -----------------------------------
 
 		private int[] ParseTextToIntArray(in string path)
 		{
@@ -162,6 +201,20 @@ namespace Lab1
 			return result.ToArray();
 		}
 
+		private Movie[] ParseJsonToMovieArray(in string path)
+        {
+			using (StreamReader sr = new StreamReader(path))
+            {
+				string jsonFile = sr.ReadToEnd();
+
+				List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(jsonFile);
+
+				return movies.ToArray();
+			}
+        }
+
+		// ------------------------------------- utility methods ----------------------------------
+
 		private void PrintCharacteristicsToTable(in int row, in int elements, in int comparsions, in int permutations, in float time)
 		{
 			_sortTableControls[SortedTable.GetIndexOfControl(row, 1)].Text = elements.ToString();
@@ -183,6 +236,19 @@ namespace Lab1
 			textBox.SelectedText = arrayElements;
 		}
 
+		private void PrintArray(in Movie[] array, in TextBox textBox)
+		{
+			textBox.Text = "";
+
+			string arrayElements = "";
+			for (int i = 0; i < array.Length; i++)
+				arrayElements += array[i].Name + ' ' + array[i].Genre + ' ' + array[i].Director + ' ' + array[i].Year + ";   ";
+
+			// textbox updates every time text is changed so directly setting text property to 5000 characters long string is too slow
+			textBox.SelectionStart = textBox.TextLength;
+			textBox.SelectedText = arrayElements;
+		}
+
 		private void ClearSorted()
 		{
 			// characteristics table
@@ -191,196 +257,6 @@ namespace Lab1
 					_sortTableControls[SortedTable.GetIndexOfControl(row, column)].Text = "";
 
 			SortedArray.Text = "";
-		}
-
-		private void RestoreControlValues()
-		{
-			_comparsions = 0;
-			_permutations = 0;
-			_milliseconds = DateTime.Now.Millisecond;
-		}
-
-		private void Swap(ref int n1, ref int n2)
-		{
-			int temp = n1;
-			n1 = n2;
-			n2 = temp;
-		}
-
-		// ------------------------------------ sorting algorithms --------------------------------------
-
-		private void SelectionSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-			
-
-			// algorithm
-			int max, indexMax, currentIndex;
-			for (int j = arrayIn.Length - 1; j > 0; j--)
-			{
-				indexMax = 0;
-				max = arrayIn[indexMax];
-				currentIndex = 1;
-
-				while (currentIndex < j)
-				{
-					_comparsions++;
-					if (max < arrayIn[currentIndex])
-					{
-						max = arrayIn[currentIndex];
-						indexMax = currentIndex;
-					}
-					currentIndex++;
-				}
-
-				_permutations++;
-				Swap(ref arrayIn[currentIndex], ref arrayIn[indexMax]);
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void BubbleSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-
-			// algorithm
-			for (int i = 0; i < arrayIn.Length; i++)
-				for (int j = 0; j < arrayIn.Length - 1; j++)
-				{
-					_comparsions++;
-					if (arrayIn[j] > arrayIn[j + 1])
-					{
-						_permutations++;
-						Swap(ref arrayIn[j + 1], ref arrayIn[j]);
-					}
-				}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void InsertionSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-			
-			// algorithm
-			int key;
-			int j;
-			for (var i = 1; i < arrayIn.Length; i++)
-			{
-				key = arrayIn[i];
-				j = i;
-				_comparsions++;
-				while ((j >= 1) && (arrayIn[j - 1] > key))
-				{
-					_permutations++;
-					Swap(ref arrayIn[j - 1], ref arrayIn[j]);
-					j--;
-				}
-
-				arrayIn[j] = key;
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void GnomeSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-
-			// algorithm
-			var index = 1;
-			var nextIndex = index + 1;
-
-			while (index < arrayIn.Length)
-			{
-				_comparsions++;
-				if (arrayIn[index - 1] < arrayIn[index])
-				{
-					index = nextIndex;
-					nextIndex++;
-				}
-				else
-				{
-					_permutations++;
-					Swap(ref arrayIn[index - 1], ref arrayIn[index]);
-					index--;
-					if (index == 0)
-					{
-						index = nextIndex;
-						nextIndex++;
-					}
-				}
-			}
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void QuickSort(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-			QuickSort_Algo(ref arrayIn, 0, arrayIn.Length - 1);
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-
-			PrintArray(arrayIn, SortedArray);
-			PrintCharacteristicsToTable(SortMethodNumbersDropDown.SelectedIndex + 1, arrayIn.Length, _comparsions, _permutations, _milliseconds);
-		}
-
-		private void QuickSort_Algo(ref int[] a, int start, int finish)
-		{
-			if (start < finish)
-			{
-				int q = QuickSort_Partition(a, start, finish);
-				QuickSort_Algo(ref a, start, q);
-				QuickSort_Algo(ref a, q + 1, finish);
-			}
-		}
-
-		private int QuickSort_Partition(int[] a, int p, int r)
-		{
-			int x = a[p];
-			int i = p - 1;
-			int j = r + 1;
-			while (true)
-			{
-				do
-				{
-					j--;
-					_comparsions++;
-				}
-				while (a[j] > x);
-				do
-				{
-					i++;
-					_comparsions++;
-				}
-				while (a[i] < x);
-				if (i < j)
-				{
-					Swap(ref a[i], ref a[j]);
-					_permutations++;
-				}
-				else
-				{
-					return j;
-				}
-			}
 		}
 	}
 }
