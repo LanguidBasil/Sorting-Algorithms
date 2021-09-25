@@ -179,9 +179,187 @@ namespace Lab1
 
 		// ----------------------------------------------------------------------------------------
 
+		public static (int, int, float) Selection(ref Movie[] arrayIn)
+		{
+			RestoreControlValues();
+
+
+			// algorithm
+			int max, indexMax, currentIndex;
+			for (int j = arrayIn.Length - 1; j > 0; j--)
+			{
+				indexMax = 0;
+				max = arrayIn[indexMax].Year;
+				currentIndex = 1;
+
+				while (currentIndex < j)
+				{
+					_comparsions++;
+					if (max < arrayIn[currentIndex].Year)
+					{
+						max = arrayIn[currentIndex].Year;
+						indexMax = currentIndex;
+					}
+					currentIndex++;
+				}
+
+				_permutations++;
+				Swap(ref arrayIn[currentIndex], ref arrayIn[indexMax]);
+			}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		public static (int, int, float) Bubble(ref Movie[] arrayIn)
+		{
+			RestoreControlValues();
+
+
+			// algorithm
+			for (int i = 0; i < arrayIn.Length; i++)
+				for (int j = 0; j < arrayIn.Length - 1; j++)
+				{
+					_comparsions++;
+					if (arrayIn[j].Year > arrayIn[j + 1].Year)
+					{
+						_permutations++;
+						Swap(ref arrayIn[j + 1], ref arrayIn[j]);
+					}
+				}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		public static (int, int, float) Insertion(ref Movie[] arrayIn)
+		{
+			RestoreControlValues();
+
+
+			// algorithm
+			int key;
+			int j;
+			for (var i = 1; i < arrayIn.Length; i++)
+			{
+				key = arrayIn[i].Year;
+				j = i;
+				_comparsions++;
+				while ((j >= 1) && (arrayIn[j - 1].Year > key))
+				{
+					_permutations++;
+					Swap(ref arrayIn[j - 1], ref arrayIn[j]);
+					j--;
+				}
+
+				arrayIn[j].Year = key;
+			}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		public static (int, int, float) Gnome(ref Movie[] arrayIn)
+		{
+			RestoreControlValues();
+
+
+			// algorithm
+			var index = 1;
+			var nextIndex = index + 1;
+
+			while (index < arrayIn.Length)
+			{
+				_comparsions++;
+				if (arrayIn[index - 1].Year < arrayIn[index].Year)
+				{
+					index = nextIndex;
+					nextIndex++;
+				}
+				else
+				{
+					_permutations++;
+					Swap(ref arrayIn[index - 1], ref arrayIn[index]);
+					index--;
+					if (index == 0)
+					{
+						index = nextIndex;
+						nextIndex++;
+					}
+				}
+			}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		public static (int, int, float) Quick(ref Movie[] arrayIn)
+		{
+			RestoreControlValues();
+
+			Quick_Algo(ref arrayIn, 0, arrayIn.Length - 1);
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		private static void Quick_Algo(ref Movie[] a, int start, int finish)
+		{
+			if (start < finish)
+			{
+				int q = Quick_Partition(a, start, finish);
+				Quick_Algo(ref a, start, q);
+				Quick_Algo(ref a, q + 1, finish);
+			}
+		}
+
+		private static int Quick_Partition(Movie[] a, int p, int r)
+		{
+			int x = a[p].Year;
+			int i = p - 1;
+			int j = r + 1;
+			while (true)
+			{
+				do
+				{
+					j--;
+					_comparsions++;
+				}
+				while (a[j].Year > x);
+				do
+				{
+					i++;
+					_comparsions++;
+				}
+				while (a[i].Year < x);
+				if (i < j)
+				{
+					Swap(ref a[i], ref a[j]);
+					_permutations++;
+				}
+				else
+				{
+					return j;
+				}
+			}
+		}
+
+		// ----------------------------------------------------------------------------------------
+
 		private static void Swap(ref int n1, ref int n2)
 		{
 			int temp = n1;
+			n1 = n2;
+			n2 = temp;
+		}
+
+		private static void Swap(ref Movie n1, ref Movie n2)
+		{
+			Movie temp = n1;
 			n1 = n2;
 			n2 = temp;
 		}

@@ -74,41 +74,50 @@ namespace Lab1
 
 		private void SortButton_Click(object sender, EventArgs e)
 		{
-			// we're not changing initial arrays so we can try every sorting algorithm
-			int[] ints = new int[_nArray.Length];
-			for (int i = 0; i < ints.Length; i++)
-				ints[i] = _nArray[i];
+			int[] ints = default;
+			Movie[] movies = default;
 
-			Movie[] movies = new Movie[_mArray.Length];
-            for (int i = 0; i < movies.Length; i++)
-				movies[i] = _mArray[i];
+			// we're not changing initial arrays so we can try every sorting algorithm
+			if (_workingWith == SortingType.ints)
+			{
+				ints = new int[_nArray.Length];
+				for (int i = 0; i < ints.Length; i++)
+					ints[i] = _nArray[i];
+			}
+			else
+			{
+				movies = new Movie[_mArray.Length];
+				for (int i = 0; i < movies.Length; i++)
+					movies[i] = _mArray[i];
+			}
+
 
 			(int, int, float) results;
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
 				case 0:
 				{
-					results = _workingWith == SortingType.ints ? Sorting.Selection(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Selection(ref ints) : Sorting.Selection(ref movies);
 					break;
 				}
 				case 1:
 				{
-					results = _workingWith == SortingType.ints ? Sorting.Bubble(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Bubble(ref ints) : Sorting.Bubble(ref movies);
 					break;
 				}
 				case 2:
 				{
-					results = _workingWith == SortingType.ints ? Sorting.Insertion(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Insertion(ref ints) : Sorting.Insertion(ref movies);
 					break;
 				}
 				case 3:
 				{
-					results = _workingWith == SortingType.ints ? Sorting.Gnome(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Gnome(ref ints) : Sorting.Gnome(ref movies);
 					break;
 				}
 				case 4:
 				{
-					results = _workingWith == SortingType.ints ? Sorting.Quick(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Quick(ref ints) : Sorting.Quick(ref movies);
 					break;
 				}
 				default:
