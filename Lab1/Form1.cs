@@ -12,7 +12,7 @@ namespace Lab1
 	{
 		private int[] _nArray;
 		private Movie[] _mArray;
-		private string workingWith;
+		private SortingType _workingWith;
 		private readonly Control[] _sortTableControls;
 
 		public Form()
@@ -52,7 +52,7 @@ namespace Lab1
 				if (extension == ".txt")
 				{
 					_nArray = ParseTextToIntArray(ArrayInDialog.FileName);
-					workingWith = "int";
+					_workingWith = SortingType.ints;
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -62,7 +62,7 @@ namespace Lab1
 				else if (extension == ".json")
 				{
 					_mArray = ParseJsonToMovieArray(ArrayInDialog.FileName);
-					workingWith = nameof(Movie);
+					_workingWith = SortingType.movies;
 
 					ArrayInLabel.Text = ArrayInDialog.FileName;
 					ClearSorted();
@@ -74,7 +74,7 @@ namespace Lab1
 
 		private void SortButton_Click(object sender, EventArgs e)
 		{
-			// we're not changing initial array so we can try every sorting algorithm
+			// we're not changing initial arrays so we can try every sorting algorithm
 			int[] ints = new int[_nArray.Length];
 			for (int i = 0; i < ints.Length; i++)
 				ints[i] = _nArray[i];
@@ -88,27 +88,27 @@ namespace Lab1
 			{
 				case 0:
 				{
-					results = workingWith == "int" ? Sorting.Selection(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Selection(ref ints) : default;
 					break;
 				}
 				case 1:
 				{
-					results = workingWith == "int" ? Sorting.Bubble(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Bubble(ref ints) : default;
 					break;
 				}
 				case 2:
 				{
-					results = workingWith == "int" ? Sorting.Insertion(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Insertion(ref ints) : default;
 					break;
 				}
 				case 3:
 				{
-					results = workingWith == "int" ? Sorting.Gnome(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Gnome(ref ints) : default;
 					break;
 				}
 				case 4:
 				{
-					results = workingWith == "int" ? Sorting.Quick(ref ints) : default;
+					results = _workingWith == SortingType.ints ? Sorting.Quick(ref ints) : default;
 					break;
 				}
 				default:
@@ -122,7 +122,7 @@ namespace Lab1
 			if (results != default)
 			{
 				int length;
-				if (workingWith == "int")
+				if (_workingWith == SortingType.ints)
 				{
 					PrintArray(ints, SortedArray);
 					length = ints.Length;
