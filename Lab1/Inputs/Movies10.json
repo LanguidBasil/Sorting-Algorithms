@@ -1,12 +1,14 @@
-{
-	"Name": "Reservoir Dogs",
-	"Genre": "Thriller",
-	"Director": "Quentin Tarantino",
-	"Year": "1992"
-}
-{
-	"Name": "Socail Network",
-	"Genre": "Biography",
-	"Director": "David Fincher",
-	"Year": "2010"
-}
+[
+	{
+		"Name": "Reservoir Dogs",
+		"Genre": "Thriller",
+		"Director": "Quentin Tarantino",
+		"Year": "1992"
+	},
+	{
+		"Name": "Socail Network",
+		"Genre": "Biography",
+		"Director": "David Fincher",
+		"Year": "2010"
+	}
+]

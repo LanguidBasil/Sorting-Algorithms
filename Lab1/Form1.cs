@@ -5,13 +5,13 @@ using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Lab1
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
 		private int[] _nArray;
+		private Movie[] _mArray;
 		private readonly Control[] _sortTableControls;
 
 		public Form()
@@ -59,7 +59,9 @@ namespace Lab1
 				}
 				else if (extension == ".json")
 				{
+					_mArray = ParseJsonToMovieArray(ArrayInDialog.FileName);
 
+					// proceed
 				}
 			}
 		}
@@ -144,7 +146,7 @@ namespace Lab1
 			}
 		}
 
-		// ------------------------------------- utility methods ----------------------------------------
+		// -------------------------------------- parse methods -----------------------------------
 
 		private int[] ParseTextToIntArray(in string path)
 		{
@@ -168,6 +170,20 @@ namespace Lab1
 			result.Add(Convert.ToInt32(number));
 			return result.ToArray();
 		}
+
+		private Movie[] ParseJsonToMovieArray(in string path)
+        {
+			using (StreamReader sr = new StreamReader(path))
+            {
+				string jsonFile = sr.ReadToEnd();
+
+				List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(jsonFile);
+
+				return movies.ToArray();
+			}
+        }
+
+		// ------------------------------------- utility methods ----------------------------------
 
 		private void PrintCharacteristicsToTable(in int row, in int elements, in int comparsions, in int permutations, in float time)
 		{

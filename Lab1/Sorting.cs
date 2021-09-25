@@ -196,6 +196,5 @@ namespace Lab1
 			_permutations = 0;
 			_milliseconds = DateTime.Now.Millisecond;
 		}
-
 	}
 }
