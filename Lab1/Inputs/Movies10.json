@@ -1,14 +1,62 @@
 [
-	{
-		"Name": "Reservoir Dogs",
-		"Genre": "Thriller",
-		"Director": "Quentin Tarantino",
-		"Year": "1992"
-	},
-	{
-		"Name": "Socail Network",
-		"Genre": "Biography",
-		"Director": "David Fincher",
-		"Year": "2010"
-	}
+  {
+    "Name": "Веном 2",
+    "Director": "Andy Serkis",
+    "Genre": "Action Sci-Fi Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Семейка Аддамс: Горящий тур",
+    "Director": "Greg Tiernan",
+    "Genre": "Animation Adventure Comedy Family Fantasy Horror",
+    "Year": "2021"
+  },
+  {
+    "Name": "Множественные святые Ньюарка",
+    "Director": "Alan Taylor",
+    "Genre": "Crime Drama",
+    "Year": "2021"
+  },
+  {
+    "Name": "Mayday",
+    "Director": "Karen Cinorre",
+    "Genre": "Drama Fantasy Mystery",
+    "Year": "2021"
+  },
+  {
+    "Name": "Титан",
+    "Director": "Julia Ducournau",
+    "Genre": "Drama Sci-Fi Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Музыка Иисуса",
+    "Director": "Andrew Erwin",
+    "Genre": "Documentary",
+    "Year": "2021"
+  },
+  {
+    "Name": "Old Henry",
+    "Director": "Potsy Ponciroli",
+    "Genre": "Western",
+    "Year": "2021"
+  },
+  {
+    "Name": "Не время умирать",
+    "Director": "Cary Joji Fukunaga",
+    "Genre": "Action Adventure Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Ягнёнок",
+    "Director": "Valdimar Jóhannsson",
+    "Genre": "Drama Horror Mystery",
+    "Year": "2021"
+  },
+  {
+    "Name": "The Rescue",
+    "Director": "Jimmy Chin",
+    "Genre": "Documentary Drama",
+    "Year": "2021"
+  }
 ]
