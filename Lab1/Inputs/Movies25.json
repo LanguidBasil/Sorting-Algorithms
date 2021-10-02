@@ -1,12 +1,152 @@
-{
-	"Name": "Reservoir Dogs",
-	"Genre": "Thriller",
-	"Director": "Quentin Tarantino",
-	"Year": "1992"
-}
-{
-	"Name": "Socail Network",
-	"Genre": "Biography",
-	"Director": "David Fincher",
-	"Year": "2010"
-}
+[
+  {
+    "Name": "Веном 2",
+    "Director": "Andy Serkis",
+    "Genre": "Action Sci-Fi Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Семейка Аддамс: Горящий тур",
+    "Director": "Greg Tiernan",
+    "Genre": "Animation Adventure Comedy Family Fantasy Horror",
+    "Year": "2021"
+  },
+  {
+    "Name": "Множественные святые Ньюарка",
+    "Director": "Alan Taylor",
+    "Genre": "Crime Drama",
+    "Year": "2021"
+  },
+  {
+    "Name": "Mayday",
+    "Director": "Karen Cinorre",
+    "Genre": "Drama Fantasy Mystery",
+    "Year": "2021"
+  },
+  {
+    "Name": "Титан",
+    "Director": "Julia Ducournau",
+    "Genre": "Drama Sci-Fi Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Музыка Иисуса",
+    "Director": "Andrew Erwin",
+    "Genre": "Documentary",
+    "Year": "2021"
+  },
+  {
+    "Name": "Old Henry",
+    "Director": "Potsy Ponciroli",
+    "Genre": "Western",
+    "Year": "2021"
+  },
+  {
+    "Name": "Не время умирать",
+    "Director": "Cary Joji Fukunaga",
+    "Genre": "Action Adventure Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Ягнёнок",
+    "Director": "Valdimar Jóhannsson",
+    "Genre": "Drama Horror Mystery",
+    "Year": "2021"
+  },
+  {
+    "Name": "The Rescue",
+    "Director": "Jimmy Chin",
+    "Genre": "Documentary Drama",
+    "Year": "2021"
+  },
+  {
+    "Name": "South of Heaven",
+    "Director": "Aharon Keshales",
+    "Genre": "Action Crime Drama Horror Mystery Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Mass",
+    "Director": "Fran Kranz",
+    "Genre": "Drama",
+    "Year": "2021"
+  },
+  {
+    "Name": "Survive the Game",
+    "Director": "James Cullen Bressack",
+    "Genre": "Action Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Хэллоуин убивает",
+    "Director": "David Gordon Green",
+    "Genre": "Crime Horror Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Последняя дуэль",
+    "Director": "Ridley Scott",
+    "Genre": "Drama History",
+    "Year": "2021"
+  },
+  {
+    "Name": "Остров Бергмана",
+    "Director": "Mia Hansen-Løve",
+    "Genre": "Drama",
+    "Year": "2021"
+  },
+  {
+    "Name": "Needle in a Timestack",
+    "Director": "John Ridley",
+    "Genre": "Romance Sci-Fi",
+    "Year": "2021"
+  },
+  {
+    "Name": "Hard Luck Love Song",
+    "Director": "Justin Corsbie",
+    "Genre": "Drama Music Romance Thriller",
+    "Year": "2020"
+  },
+  {
+    "Name": "Пончары. Глобальное закругление",
+    "Director": "David Silverman",
+    "Genre": "Animation Adventure Comedy Family",
+    "Year": "2021"
+  },
+  {
+    "Name": "Seal Team",
+    "Director": "Greig Cameron",
+    "Genre": "Animation",
+    "Year": "2021"
+  },
+  {
+    "Name": "Дюна",
+    "Director": "Denis Villeneuve",
+    "Genre": "Action Adventure Drama Sci-Fi",
+    "Year": "2021"
+  },
+  {
+    "Name": "Французский вестник. Приложение к газете «Либерти. Канзас ивнинг сан»",
+    "Director": "Wes Anderson",
+    "Genre": "Comedy Drama Romance",
+    "Year": "2021"
+  },
+  {
+    "Name": "Неисправимый Рон",
+    "Director": "Sarah Smith",
+    "Genre": "Animation Adventure Comedy Family Sci-Fi",
+    "Year": "2021"
+  },
+  {
+    "Name": "Broadcast Signal Intrusion",
+    "Director": "Jacob Gentry",
+    "Genre": "Crime Drama Horror Mystery Thriller",
+    "Year": "2021"
+  },
+  {
+    "Name": "Warning",
+    "Director": "Agata Alexander",
+    "Genre": "Sci-Fi Thriller",
+    "Year": "2021"
+  }
+]
