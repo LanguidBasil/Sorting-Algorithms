@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Lab1
+namespace SortingAlgorithms
 {
 	public static class TableLayoutPanelExtensions
 	{

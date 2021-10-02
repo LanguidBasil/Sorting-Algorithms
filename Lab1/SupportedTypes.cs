@@ -1,4 +1,4 @@
-﻿namespace Lab1
+﻿namespace SortingAlgorithms
 {
     enum SortingType
     {

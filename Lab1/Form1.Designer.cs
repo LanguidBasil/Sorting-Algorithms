@@ -1,5 +1,5 @@
 ﻿
-namespace Lab1
+namespace SortingAlgorithms
 {
 	partial class Form
 	{

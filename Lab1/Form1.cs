@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Newtonsoft.Json;
 
-namespace Lab1
+namespace SortingAlgorithms
 {
 	public partial class Form : System.Windows.Forms.Form
 	{
