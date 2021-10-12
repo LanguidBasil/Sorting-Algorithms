@@ -99,36 +99,33 @@ namespace SortingAlgorithms
 			switch (SortMethodNumbersDropDown.SelectedIndex)
 			{
 				case 0:
-				{
 					results = _workingWith == SortingType.ints ? Sorting.Selection(ref ints) : Sorting.Selection(ref movies);
 					break;
-				}
 				case 1:
-				{
 					results = _workingWith == SortingType.ints ? Sorting.Bubble(ref ints) : Sorting.Bubble(ref movies);
 					break;
-				}
 				case 2:
-				{
 					results = _workingWith == SortingType.ints ? Sorting.Insertion(ref ints) : Sorting.Insertion(ref movies);
 					break;
-				}
 				case 3:
-				{
 					results = _workingWith == SortingType.ints ? Sorting.Gnome(ref ints) : Sorting.Gnome(ref movies);
 					break;
-				}
 				case 4:
-				{
 					results = _workingWith == SortingType.ints ? Sorting.Quick(ref ints) : Sorting.Quick(ref movies);
 					break;
-				}
+				case 5:
+					results = _workingWith == SortingType.ints ? Sorting.Merge(ref ints) : Sorting.Merge(ref movies);
+					break;
+				case 6:
+					results = _workingWith == SortingType.ints ? Sorting.NaturalMerge(ref ints) : Sorting.NaturalMerge(ref movies);
+					break;
+				case 7:
+					results = _workingWith == SortingType.ints ? Sorting.BalancedMerge(ref ints) : Sorting.BalancedMerge(ref movies);
+					break;
 				default:
-				{
 					results = default;
 					Console.WriteLine($"Received invalid sort method index: {SortMethodNumbersDropDown.SelectedIndex}");
 					break;
-				}
 			}
 
 			if (results != default)
