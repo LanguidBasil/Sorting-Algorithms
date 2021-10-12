@@ -31,6 +31,9 @@ namespace SortingAlgorithms
 			_sortTableControls[SortedTable.GetIndexOfControl(3, 0)] = new Label() { Text = "Простой выбор", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
 			_sortTableControls[SortedTable.GetIndexOfControl(4, 0)] = new Label() { Text = "Гномья", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
 			_sortTableControls[SortedTable.GetIndexOfControl(5, 0)] = new Label() { Text = "Быстрая", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
+			_sortTableControls[SortedTable.GetIndexOfControl(6, 0)] = new Label() { Text = "Простое слияние", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
+			_sortTableControls[SortedTable.GetIndexOfControl(7, 0)] = new Label() { Text = "Естественное слияние", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
+			_sortTableControls[SortedTable.GetIndexOfControl(8, 0)] = new Label() { Text = "Многопутевое сбалансированное слияние", AutoSize = false, TextAlign = ContentAlignment.MiddleLeft };
 
 			for (int row = 1; row < SortedTable.RowCount; row++)
 				for (int column = 1; column < SortedTable.ColumnCount; column++)
