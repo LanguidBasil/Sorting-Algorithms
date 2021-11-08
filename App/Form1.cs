@@ -116,9 +116,9 @@ namespace SortingAlgorithms
 				case 5:
 					results = _workingWith == SortingType.ints ? Sorting.Merge(ref ints) : Sorting.Merge(ref movies);
 					break;
-				case 6:
-					results = _workingWith == SortingType.ints ? Sorting.NaturalMerge(ref ints) : Sorting.NaturalMerge(ref movies);
-					break;
+				//case 6:
+				//	results = _workingWith == SortingType.ints ? Sorting.NaturalMerge(ref ints) : Sorting.NaturalMerge(ref movies);
+				//	break;
 				case 7:
 					results = _workingWith == SortingType.ints ? Sorting.BalancedMerge(ref ints) : Sorting.BalancedMerge(ref movies);
 					break;

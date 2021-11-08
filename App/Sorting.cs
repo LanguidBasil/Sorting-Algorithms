@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SortingAlgorithms
 {
@@ -183,134 +184,119 @@ namespace SortingAlgorithms
         {
 			RestoreControlValues();
 
-			Merge(ref arrayIn, 0, arrayIn.Length - 1);
+
+			// algorithm
+			var bigger = new List<int>();
+			var smaller = new List<int>();
+			int stepLength = 1;
+			int sum0 = 0;
+			int sum1 = 0;
+
+			while (stepLength < arrayIn.Length / 2)
+            {
+                for (int i = 0; i < arrayIn.Length / stepLength; i++)
+                {
+                    for (int j = 0; j < stepLength; j++)
+                    {
+						if (i % 2 == 0)
+							sum0 += arrayIn[i * stepLength + j];
+						else
+							sum1 += arrayIn[i * stepLength + j];
+					}
+
+					if (sum0 != 0 && sum1 != 0)
+                        for (int j = 0; j < stepLength; j++)
+                        {
+							if (sum0 > sum1)
+                            {
+								bigger .Add(arrayIn[(i - 1) * stepLength + j]);
+								smaller.Add(arrayIn[i * stepLength + j]);
+							}
+							else
+							{
+								bigger .Add(arrayIn[i * stepLength + j]);
+								smaller.Add(arrayIn[(i - 1) * stepLength + j]);
+							}
+                        }
+                }
+
+				stepLength++;
+            }
+
+
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
 
-		private static void Merge(ref int[] arrayIn, int lowIndex, int highIndex)
-		{
-			if (lowIndex < highIndex)
-			{
-				var middleIndex = (lowIndex + highIndex) / 2;
-				Merge(ref arrayIn, lowIndex, middleIndex);
-				Merge(ref arrayIn, middleIndex + 1, highIndex);
-				_permutations++;
-				MergeArrays(ref arrayIn, lowIndex, middleIndex, highIndex);
-			}
-        }
 
-		private static void MergeArrays(ref int[] array, int lowIndex, int middleIndex, int highIndex)
-		{
-			var left = lowIndex;
-			var right = middleIndex + 1;
-			var tempArray = new int[highIndex - lowIndex + 1];
-			var index = 0;
+		//public static (int, int, float) NaturalMerge(ref int[] arrayIn)
+		//{
+		//	RestoreControlValues();
 
-			while ((left <= middleIndex) && (right <= highIndex))
-			{
-				_comparsions++;
-				if (array[left] < array[right])
-				{
-					tempArray[index] = array[left];
-					left++;
-				}
-				else
-				{
-					tempArray[index] = array[right];
-					right++;
-				}
+		//	if (arrayIn.Length <= 1)
+		//	{
+		//		_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+		//		return (_comparsions, _permutations, _milliseconds);
+		//	};
 
-				index++;
-			}
+		//	int start = 0;
+		//	int stop2;
+		//	for (int stop1 = NaturalGetNextStop(start, arrayIn); stop1 < arrayIn.Length - 1; stop1++)
+		//	{
+		//		stop2 = NaturalGetNextStop(stop1 + 1, arrayIn);
+		//		NaturalArraysMerge(ref arrayIn, start, stop1, stop2);
+		//		stop1 = stop2;
+		//	}
 
-			for (var i = left; i <= middleIndex; i++)
-			{
-				tempArray[index] = array[i];
-				index++;
-			}
+		//	_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+		//	return (_comparsions, _permutations, _milliseconds);
+		//}
 
-			for (var i = right; i <= highIndex; i++)
-			{
-				tempArray[index] = array[i];
-				index++;
-			}
+		//private static void NaturalArraysMerge(ref int[] arrayIn, int start, int stop1, int stop2)
+		//{
+		//	int[] temp = new int[stop1 - start + 1];
+		//	int[] tem = new int[stop2 - start + 1];
+		//	for (int k = start; k <= stop1; k++)
+		//		temp[k - start] = arrayIn[k];
 
-			for (var i = 0; i < tempArray.Length; i++)
-			{
-				array[lowIndex + i] = tempArray[i];
-			}
-		}
+		//	int i = start;
+		//	int j = stop1 + 1;
+		//	for (int k = start; k <= stop2; k++)
+		//	{
+		//		if (i > stop1)
+		//			break;
+		//		else if (j > stop2)
+		//		{
+		//			arrayIn[k] = temp[i];
+		//			i++;
+		//		}
+		//		else
+		//		{
+		//			_comparsions++;
+		//			if (temp[i] > arrayIn[j])
+		//			{
+		//				arrayIn[k] = arrayIn[j];
+		//				j++;
+		//			}
+		//			else
+		//			{
+		//				arrayIn[k] = temp[i];
+		//				i++;
+		//			}
+		//		}
+		//		tem[k - start] = arrayIn[k];
+		//	}
 
+		//	_permutations++;
+		//}
 
-		public static (int, int, float) NaturalMerge(ref int[] arrayIn)
-		{
-			RestoreControlValues();
-
-			if (arrayIn.Length <= 1)
-			{
-				_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-				return (_comparsions, _permutations, _milliseconds);
-			};
-
-			int start = 0;
-			int stop2;
-			for (int stop1 = NaturalGetNextStop(start, arrayIn); stop1 < arrayIn.Length - 1; stop1++)
-			{
-				stop2 = NaturalGetNextStop(stop1 + 1, arrayIn);
-				NaturalArraysMerge(ref arrayIn, start, stop1, stop2);
-				stop1 = stop2;
-			}
-
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-			return (_comparsions, _permutations, _milliseconds);
-		}
-
-		private static void NaturalArraysMerge(ref int[] arrayIn, int start, int stop1, int stop2)
-		{
-			int[] temp = new int[stop1 - start + 1];
-			int[] tem = new int[stop2 - start + 1];
-			for (int k = start; k <= stop1; k++)
-				temp[k - start] = arrayIn[k];
-
-			int i = start;
-			int j = stop1 + 1;
-			for (int k = start; k <= stop2; k++)
-			{
-				if (i > stop1)
-					break;
-				else if (j > stop2)
-				{
-					arrayIn[k] = temp[i];
-					i++;
-				}
-				else
-				{
-					_comparsions++;
-					if (temp[i] > arrayIn[j])
-					{
-						arrayIn[k] = arrayIn[j];
-						j++;
-					}
-					else
-					{
-						arrayIn[k] = temp[i];
-						i++;
-					}
-				}
-				tem[k - start] = arrayIn[k];
-			}
-
-			_permutations++;
-		}
-
-		private static int NaturalGetNextStop(int i, in int[] arrayIn)
-		{
-			for (; i < arrayIn.Length - 1 && arrayIn[i] < arrayIn[i + 1];)
-				i++;
-			return i;
-		}
+		//private static int NaturalGetNextStop(int i, in int[] arrayIn)
+		//{
+		//	for (; i < arrayIn.Length - 1 && arrayIn[i] < arrayIn[i + 1];)
+		//		i++;
+		//	return i;
+		//}
 
 
 		public static (int, int, float) BalancedMerge(ref int[] arrayIn)
