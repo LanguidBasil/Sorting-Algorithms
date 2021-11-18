@@ -190,7 +190,7 @@ namespace SortingAlgorithms
 			List<int> smaller;
 			int stepLength = 1;
 
-			while (stepLength < arrayIn.Length / 2)
+			while (stepLength < arrayIn.Length)
 			{
 				MergeSplit(arrayIn, out bigger, out smaller, stepLength);
 
@@ -223,6 +223,7 @@ namespace SortingAlgorithms
 
 				for (int j = 0; j < stepLength; j++)
 				{
+					_comparsions++;
 					if (sum0 > sum1)
 					{
 						bigger.Add(arrayIn[(i * 2) * stepLength + j]);
@@ -252,6 +253,7 @@ namespace SortingAlgorithms
 
 				for (int j = 0; j < elementsLeft; j++)
 				{
+					_comparsions++;
 					if (sum0 > sum1)
 					{
 						if (j < stepLength)
@@ -278,14 +280,45 @@ namespace SortingAlgorithms
 			}
 		}
 
-		// does nothing yet
 		private static void MergeJoin(ref int[] arrayIn, in List<int> bigger, in List<int> smaller, int stepLength)
 		{
-			for (int i = 0; i < bigger.Count; i++)
-				arrayIn[i] = bigger[i];
+			int amountOfPairs = arrayIn.Length / stepLength / 2;
+			int[] numbersToSort;
 
-			for (int i = 0; i < smaller.Count; i++)
-				arrayIn[i + bigger.Count] = smaller[i];
+			for (int i = 0; i < amountOfPairs; i++)
+			{
+				numbersToSort = new int[stepLength * 2];
+
+				for (int j = 0; j < stepLength; j++)
+				{
+					numbersToSort[j * 2] = bigger[i * stepLength + j];
+					numbersToSort[j * 2 + 1] = smaller[i * stepLength + j];
+				}
+
+				Bubble(ref numbersToSort);
+
+				for (int j = 0; j < numbersToSort.Length; j++)
+					arrayIn[i * numbersToSort.Length + j] = numbersToSort[j];
+			}
+
+			int elementsLeft = arrayIn.Length - amountOfPairs * 2 * stepLength;
+			int ntsIndex = 0;
+			numbersToSort = new int[elementsLeft];
+
+			for (int i = amountOfPairs * stepLength; i < bigger.Count; i++)
+			{
+				numbersToSort[ntsIndex] = bigger[i];
+				ntsIndex++;
+			}
+			for (int i = amountOfPairs * stepLength; i < smaller.Count; i++)
+			{
+				numbersToSort[ntsIndex] = smaller[i];
+				ntsIndex++;
+			}
+
+			Bubble(ref numbersToSort);
+			for (int j = 0; j < numbersToSort.Length; j++)
+				arrayIn[arrayIn.Length - numbersToSort.Length + j] = numbersToSort[j];
 		}
 
 
