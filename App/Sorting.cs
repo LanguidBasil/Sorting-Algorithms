@@ -42,6 +42,7 @@ namespace SortingAlgorithms
 			return(_comparsions, _permutations, _milliseconds);
 		}
 
+
 		public static (int, int, float) Bubble(ref int[] arrayIn)
 		{
 			RestoreControlValues();
@@ -63,6 +64,7 @@ namespace SortingAlgorithms
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
+
 
 		public static (int, int, float) Insertion(ref int[] arrayIn)
 		{
@@ -91,6 +93,7 @@ namespace SortingAlgorithms
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
+
 
 		public static (int, int, float) Gnome(ref int[] arrayIn)
 		{
@@ -318,77 +321,87 @@ namespace SortingAlgorithms
 
 			Bubble(ref numbersToSort);
 			for (int j = 0; j < numbersToSort.Length; j++)
+			{
+				_permutations++;
 				arrayIn[arrayIn.Length - numbersToSort.Length + j] = numbersToSort[j];
+			}
 		}
 
 
-		//public static (int, int, float) NaturalMerge(ref int[] arrayIn)
-		//{
-		//	RestoreControlValues();
+		public static (int, int, float) NaturalMerge(ref int[] arrayIn)
+		{
+			RestoreControlValues();
 
-		//	if (arrayIn.Length <= 1)
-		//	{
-		//		_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-		//		return (_comparsions, _permutations, _milliseconds);
-		//	};
 
-		//	int start = 0;
-		//	int stop2;
-		//	for (int stop1 = NaturalGetNextStop(start, arrayIn); stop1 < arrayIn.Length - 1; stop1++)
-		//	{
-		//		stop2 = NaturalGetNextStop(stop1 + 1, arrayIn);
-		//		NaturalArraysMerge(ref arrayIn, start, stop1, stop2);
-		//		stop1 = stop2;
-		//	}
+			// algorithm
+			List<int> listA;
+			List<int> listB;
 
-		//	_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-		//	return (_comparsions, _permutations, _milliseconds);
-		//}
+			while (!IsSortedAscending(arrayIn))
+			{
+				NaturalMergeSplit(arrayIn, out listA, out listB);
 
-		//private static void NaturalArraysMerge(ref int[] arrayIn, int start, int stop1, int stop2)
-		//{
-		//	int[] temp = new int[stop1 - start + 1];
-		//	int[] tem = new int[stop2 - start + 1];
-		//	for (int k = start; k <= stop1; k++)
-		//		temp[k - start] = arrayIn[k];
+				NaturalMergeJoin(ref arrayIn, listA, listB);
+			}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
 
-		//	int i = start;
-		//	int j = stop1 + 1;
-		//	for (int k = start; k <= stop2; k++)
-		//	{
-		//		if (i > stop1)
-		//			break;
-		//		else if (j > stop2)
-		//		{
-		//			arrayIn[k] = temp[i];
-		//			i++;
-		//		}
-		//		else
-		//		{
-		//			_comparsions++;
-		//			if (temp[i] > arrayIn[j])
-		//			{
-		//				arrayIn[k] = arrayIn[j];
-		//				j++;
-		//			}
-		//			else
-		//			{
-		//				arrayIn[k] = temp[i];
-		//				i++;
-		//			}
-		//		}
-		//		tem[k - start] = arrayIn[k];
-		//	}
 
-		//	_permutations++;
-		//}
+			return (_comparsions, _permutations, _milliseconds);
+		}
 
-		//private static int NaturalGetNextStop(int i, in int[] arrayIn)
-		//{
-		//	for (; i < arrayIn.Length - 1 && arrayIn[i] < arrayIn[i + 1];)
-		//		i++;
-		//	return i;
-		//}
+		private static void NaturalMergeSplit(in int[] arrayIn, out List<int> listA, out List<int> listB)
+		{
+			listA = new List<int>();
+			listB = new List<int>();
+
+			var currentList = listA;
+			currentList.Add(arrayIn[0]);
+			for (int i = 1; i < arrayIn.Length; i++)
+			{
+				_comparsions++;
+				if (arrayIn[i] >= arrayIn[i - 1])
+				{
+					currentList.Add(arrayIn[i]);
+				}
+				else
+				{
+					currentList = currentList == listA ? listB : listA;
+					currentList.Add(arrayIn[i]);
+				}
+			}
+		}
+
+		private static void NaturalMergeJoin(ref int[] arrayIn, in List<int> listA, in List<int> listB)
+		{
+			int aIndex = 0;
+			int bIndex = 0;
+			for (int i = 0; i < arrayIn.Length; i++)
+			{
+				if (aIndex >= listA.Count)
+				{
+					arrayIn[i] = listB[bIndex];
+					bIndex++;
+				}
+				else if (bIndex >= listB.Count)
+				{
+					arrayIn[i] = listA[aIndex];
+					aIndex++;
+				}
+				else if (listA[aIndex] <= listB[bIndex])
+				{
+					_comparsions++;
+					arrayIn[i] = listA[aIndex];
+					aIndex++;
+				}
+				else
+				{
+					_comparsions++;
+					arrayIn[i] = listB[bIndex];
+					bIndex++;
+				}
+				_permutations++;
+			}
+		}
 
 
 		public static (int, int, float) BalancedMerge(ref int[] arrayIn)
@@ -845,6 +858,15 @@ namespace SortingAlgorithms
 			_comparsions = 0;
 			_permutations = 0;
 			_milliseconds = DateTime.Now.Millisecond;
+		}
+
+		private static bool IsSortedAscending(in int[] arrayIn)
+		{
+			for (int i = 1; i < arrayIn.Length; i++)
+				if (arrayIn[i] < arrayIn[i - 1])
+					return false;
+
+			return true;
 		}
 	}
 }
