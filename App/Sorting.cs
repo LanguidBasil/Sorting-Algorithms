@@ -502,6 +502,7 @@ namespace SortingAlgorithms
 			return (_comparsions, _permutations, _milliseconds);
 		}
 
+
 		public static (int, int, float) Bubble(ref Movie[] arrayIn)
 		{
 			RestoreControlValues();
@@ -523,6 +524,7 @@ namespace SortingAlgorithms
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
+
 
 		public static (int, int, float) Insertion(ref Movie[] arrayIn)
 		{
@@ -551,6 +553,7 @@ namespace SortingAlgorithms
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
+
 
 		public static (int, int, float) Gnome(ref Movie[] arrayIn)
 		{
@@ -644,63 +647,143 @@ namespace SortingAlgorithms
 		{
 			RestoreControlValues();
 
-			Merge(ref arrayIn, 0, arrayIn.Length - 1);
+
+			// algorithm
+			List<Movie> bigger;
+			List<Movie> smaller;
+			int stepLength = 1;
+
+			while (stepLength < arrayIn.Length)
+			{
+				MergeSplit(arrayIn, out bigger, out smaller, stepLength);
+
+				MergeJoin(ref arrayIn, bigger, smaller, stepLength);
+
+				stepLength *= 2;
+			}
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
 
 			return (_comparsions, _permutations, _milliseconds);
 		}
 
-		private static void Merge(ref Movie[] arrayIn, int lowIndex, int highIndex)
+		private static void MergeSplit(in Movie[] arrayIn, out List<Movie> bigger, out List<Movie> smaller, int stepLength)
 		{
-			if (lowIndex < highIndex)
+			bigger = new List<Movie>();
+			smaller = new List<Movie>();
+			int sum0 = 0;
+			int sum1 = 0;
+
+			int amountOfPairs = arrayIn.Length / stepLength / 2;
+
+			for (int i = 0; i < amountOfPairs; i++)
 			{
-				var middleIndex = (lowIndex + highIndex) / 2;
-				Merge(ref arrayIn, lowIndex, middleIndex);
-				Merge(ref arrayIn, middleIndex + 1, highIndex);
-				_permutations++;
-				MergeArrays(ref arrayIn, lowIndex, middleIndex, highIndex);
+				for (int j = 0; j < stepLength; j++)
+				{
+					sum0 += arrayIn[(i * 2) * stepLength + j].Year;
+					sum1 += arrayIn[(i * 2 + 1) * stepLength + j].Year;
+				}
+
+				for (int j = 0; j < stepLength; j++)
+				{
+					_comparsions++;
+					if (sum0 > sum1)
+					{
+						bigger.Add(arrayIn[(i * 2) * stepLength + j]);
+						smaller.Add(arrayIn[(i * 2 + 1) * stepLength + j]);
+					}
+					else
+					{
+						bigger.Add(arrayIn[(i * 2) * stepLength + j]);
+						smaller.Add(arrayIn[(i * 2 + 1) * stepLength + j]);
+					}
+				}
+
+				sum0 = 0;
+				sum1 = 0;
+			}
+
+			int elementsLeft = arrayIn.Length - amountOfPairs * 2 * stepLength;
+			if (elementsLeft > 0)
+			{
+				for (int j = 0; j < elementsLeft; j++)
+				{
+					if (j < stepLength)
+						sum0 += arrayIn[arrayIn.Length - elementsLeft + j].Year;
+					else
+						sum1 += arrayIn[arrayIn.Length - elementsLeft + j].Year;
+				}
+
+				for (int j = 0; j < elementsLeft; j++)
+				{
+					_comparsions++;
+					if (sum0 > sum1)
+					{
+						if (j < stepLength)
+						{
+							bigger.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+						else
+						{
+							smaller.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+					}
+					else
+					{
+						if (j < stepLength)
+						{
+							smaller.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+						else
+						{
+							bigger.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+					}
+				}
 			}
 		}
 
-		private static void MergeArrays(ref Movie[] array, int lowIndex, int middleIndex, int highIndex)
+		private static void MergeJoin(ref Movie[] arrayIn, in List<Movie> bigger, in List<Movie> smaller, int stepLength)
 		{
-			int left = lowIndex;
-			int right = middleIndex + 1;
-			var tempArray = new Movie[highIndex - lowIndex + 1];
-			int index = 0;
+			int amountOfPairs = arrayIn.Length / stepLength / 2;
+			Movie[] moviesToSort;
 
-			while ((left <= middleIndex) && (right <= highIndex))
+			for (int i = 0; i < amountOfPairs; i++)
 			{
-				_comparsions++;
-				if (array[left].Year < array[right].Year)
+				moviesToSort = new Movie[stepLength * 2];
+
+				for (int j = 0; j < stepLength; j++)
 				{
-					tempArray[index] = array[left];
-					left++;
-				}
-				else
-				{
-					tempArray[index] = array[right];
-					right++;
+					moviesToSort[j * 2] = bigger[i * stepLength + j];
+					moviesToSort[j * 2 + 1] = smaller[i * stepLength + j];
 				}
 
-				index++;
+				Bubble(ref moviesToSort);
+
+				for (int j = 0; j < moviesToSort.Length; j++)
+					arrayIn[i * moviesToSort.Length + j] = moviesToSort[j];
 			}
 
-			for (var i = left; i <= middleIndex; i++)
+			int elementsLeft = arrayIn.Length - amountOfPairs * 2 * stepLength;
+			int ntsIndex = 0;
+			moviesToSort = new Movie[elementsLeft];
+
+			for (int i = amountOfPairs * stepLength; i < bigger.Count; i++)
 			{
-				tempArray[index] = array[i];
-				index++;
+				moviesToSort[ntsIndex] = bigger[i];
+				ntsIndex++;
+			}
+			for (int i = amountOfPairs * stepLength; i < smaller.Count; i++)
+			{
+				moviesToSort[ntsIndex] = smaller[i];
+				ntsIndex++;
 			}
 
-			for (var i = right; i <= highIndex; i++)
+			Bubble(ref moviesToSort);
+			for (int j = 0; j < moviesToSort.Length; j++)
 			{
-				tempArray[index] = array[i];
-				index++;
-			}
-
-			for (var i = 0; i < tempArray.Length; i++)
-			{
-				array[lowIndex + i] = tempArray[i];
+				_permutations++;
+				arrayIn[arrayIn.Length - moviesToSort.Length + j] = moviesToSort[j];
 			}
 		}
 
@@ -709,68 +792,75 @@ namespace SortingAlgorithms
 		{
 			RestoreControlValues();
 
-			if (arrayIn.Length <= 1)
-			{
-				_milliseconds = DateTime.Now.Millisecond - _milliseconds;
-				return (_comparsions, _permutations, _milliseconds);
-			};
 
-			int start = 0;
-			int stop2;
-			for (int stop1 = NaturalGetNextStop(start, arrayIn); stop1 < arrayIn.Length - 1; stop1++)
+			// algorithm
+			List<Movie> listA;
+			List<Movie> listB;
+
+			while (!IsSortedAscending(arrayIn))
 			{
-				stop2 = NaturalGetNextStop(stop1 + 1, arrayIn);
-				NaturalArraysMerge(ref arrayIn, start, stop1, stop2);
-				stop1 = stop2;
+				NaturalMergeSplit(arrayIn, out listA, out listB);
+
+				NaturalMergeJoin(ref arrayIn, listA, listB);
 			}
-
 			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
 			return (_comparsions, _permutations, _milliseconds);
 		}
 
-		private static void NaturalArraysMerge(ref Movie[] arrayIn, int start, int stop1, int stop2)
+		private static void NaturalMergeSplit(in Movie[] arrayIn, out List<Movie> listA, out List<Movie> listB)
 		{
-			_permutations++;
+			listA = new List<Movie>();
+			listB = new List<Movie>();
 
-			Movie[] temp = new Movie[stop1 - start + 1];
-			Movie[] tem = new Movie[stop2 - start + 1];
-			for (int k = start; k <= stop1; k++)
-				temp[k - start] = arrayIn[k];
-
-			int i = start;
-			int j = stop1 + 1;
-			for (int k = start; k <= stop2; k++)
+			var currentList = listA;
+			currentList.Add(arrayIn[0]);
+			for (int i = 1; i < arrayIn.Length; i++)
 			{
-				if (i > stop1)
-					break;
-				else if (j > stop2)
+				_comparsions++;
+				if (arrayIn[i].Year >= arrayIn[i - 1].Year)
 				{
-					arrayIn[k] = temp[i];
-					i++;
+					currentList.Add(arrayIn[i]);
+				}
+				else
+				{
+					currentList = currentList == listA ? listB : listA;
+					currentList.Add(arrayIn[i]);
+				}
+			}
+		}
+
+		private static void NaturalMergeJoin(ref Movie[] arrayIn, in List<Movie> listA, in List<Movie> listB)
+		{
+			int aIndex = 0;
+			int bIndex = 0;
+			for (int i = 0; i < arrayIn.Length; i++)
+			{
+				if (aIndex >= listA.Count)
+				{
+					arrayIn[i] = listB[bIndex];
+					bIndex++;
+				}
+				else if (bIndex >= listB.Count)
+				{
+					arrayIn[i] = listA[aIndex];
+					aIndex++;
+				}
+				else if (listA[aIndex].Year <= listB[bIndex].Year)
+				{
+					_comparsions++;
+					arrayIn[i] = listA[aIndex];
+					aIndex++;
 				}
 				else
 				{
 					_comparsions++;
-					if (temp[i].Year > arrayIn[j].Year)
-					{
-						arrayIn[k] = arrayIn[j];
-						j++;
-					}
-					else
-					{
-						arrayIn[k] = temp[i];
-						i++;
-					}
+					arrayIn[i] = listB[bIndex];
+					bIndex++;
 				}
-				tem[k - start] = arrayIn[k];
+				_permutations++;
 			}
-		}
-
-		private static int NaturalGetNextStop(int i, in Movie[] arrayIn)
-		{
-			for (; i < arrayIn.Length - 1 && arrayIn[i].Year < arrayIn[i + 1].Year;)
-				i++;
-			return i;
 		}
 
 
@@ -864,6 +954,15 @@ namespace SortingAlgorithms
 		{
 			for (int i = 1; i < arrayIn.Length; i++)
 				if (arrayIn[i] < arrayIn[i - 1])
+					return false;
+
+			return true;
+		}
+
+		private static bool IsSortedAscending(in Movie[] arrayIn)
+		{
+			for (int i = 1; i < arrayIn.Length; i++)
+				if (arrayIn[i].Year < arrayIn[i - 1].Year)
 					return false;
 
 			return true;
