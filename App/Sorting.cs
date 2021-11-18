@@ -181,52 +181,111 @@ namespace SortingAlgorithms
 
 
 		public static (int, int, float) Merge(ref int[] arrayIn)
-        {
+		{
 			RestoreControlValues();
 
 
 			// algorithm
-			var bigger = new List<int>();
-			var smaller = new List<int>();
+			List<int> bigger;
+			List<int> smaller;
 			int stepLength = 1;
+
+			while (stepLength < arrayIn.Length / 2)
+			{
+				MergeSplit(arrayIn, out bigger, out smaller, stepLength);
+
+				MergeJoin(ref arrayIn, bigger, smaller, stepLength);
+
+				stepLength *= 2;
+			}
+			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+
+
+			return (_comparsions, _permutations, _milliseconds);
+		}
+
+		private static void MergeSplit(in int[] arrayIn, out List<int> bigger, out List<int> smaller, int stepLength)
+		{
+			bigger = new List<int>();
+			smaller = new List<int>();
 			int sum0 = 0;
 			int sum1 = 0;
 
-			while (stepLength < arrayIn.Length / 2)
-            {
-                for (int i = 0; i < arrayIn.Length / stepLength; i++)
-                {
-                    for (int j = 0; j < stepLength; j++)
-                    {
-						if (i % 2 == 0)
-							sum0 += arrayIn[i * stepLength + j];
-						else
-							sum1 += arrayIn[i * stepLength + j];
+			int amountOfPairs = arrayIn.Length / stepLength / 2;
+
+			for (int i = 0; i < amountOfPairs; i++)
+			{
+				for (int j = 0; j < stepLength; j++)
+				{
+					sum0 += arrayIn[(i * 2) * stepLength + j];
+					sum1 += arrayIn[(i * 2 + 1) * stepLength + j];
+				}
+
+				for (int j = 0; j < stepLength; j++)
+				{
+					if (sum0 > sum1)
+					{
+						bigger.Add(arrayIn[(i * 2) * stepLength + j]);
+						smaller.Add(arrayIn[(i * 2 + 1) * stepLength + j]);
 					}
+					else
+					{
+						bigger.Add(arrayIn[(i * 2) * stepLength + j]);
+						smaller.Add(arrayIn[(i * 2 + 1) * stepLength + j]);
+					}
+				}
 
-					if (sum0 != 0 && sum1 != 0)
-                        for (int j = 0; j < stepLength; j++)
-                        {
-							if (sum0 > sum1)
-                            {
-								bigger .Add(arrayIn[(i - 1) * stepLength + j]);
-								smaller.Add(arrayIn[i * stepLength + j]);
-							}
-							else
-							{
-								bigger .Add(arrayIn[i * stepLength + j]);
-								smaller.Add(arrayIn[(i - 1) * stepLength + j]);
-							}
-                        }
-                }
+				sum0 = 0;
+				sum1 = 0;
+			}
 
-				stepLength++;
-            }
+			int elementsLeft = arrayIn.Length - amountOfPairs * 2 * stepLength;
+			if (elementsLeft > 0)
+			{
+				for (int j = 0; j < elementsLeft; j++)
+				{
+					if (j < stepLength)
+						sum0 += arrayIn[arrayIn.Length - elementsLeft + j];
+					else
+						sum1 += arrayIn[arrayIn.Length - elementsLeft + j];
+				}
 
+				for (int j = 0; j < elementsLeft; j++)
+				{
+					if (sum0 > sum1)
+					{
+						if (j < stepLength)
+						{
+							bigger.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+						else
+						{
+							smaller.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+					}
+					else
+					{
+						if (j < stepLength)
+						{
+							smaller.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+						else
+						{
+							bigger.Add(arrayIn[arrayIn.Length - elementsLeft + j]);
+						}
+					}
+				}
+			}
+		}
 
-			_milliseconds = DateTime.Now.Millisecond - _milliseconds;
+		// does nothing yet
+		private static void MergeJoin(ref int[] arrayIn, in List<int> bigger, in List<int> smaller, int stepLength)
+		{
+			for (int i = 0; i < bigger.Count; i++)
+				arrayIn[i] = bigger[i];
 
-			return (_comparsions, _permutations, _milliseconds);
+			for (int i = 0; i < smaller.Count; i++)
+				arrayIn[i + bigger.Count] = smaller[i];
 		}
 
 
